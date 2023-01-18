@@ -1,13 +1,16 @@
 import pygame
+from pygame import mixer
 
 pygame.init()
+mixer.music.load('assets/background-music.mp3')
+mixer.music.play(-1)
 
 is_playing = False 
 
 WINDOW_WIDTH = 720
 WINDOW_HEIGHT = 1080
 BLACK = (0, 0, 0)
-WHITE = (200, 200, 200)
+WHITE = (255, 255, 255)
 BLUE =  (0, 0,255)
 RED =  (255, 0, 0)
 
@@ -62,6 +65,8 @@ def play(matrix):
             player = 1
 
 while running:
+    
+
     if is_playing: 
         drawGrid()
         for event in pygame.event.get():
@@ -86,6 +91,7 @@ while running:
                             if(matrix[posY+1][posX] != -1):
                                 play(matrix)
     else:
+
         banner = pygame.image.load('assets/logo.png')
         banner_rect = banner.get_rect()
         banner_rect.x = SCREEN.get_width()/5
@@ -93,15 +99,20 @@ while running:
 
         play_button = pygame.image.load('assets/play-button.png')
         play_button = pygame.transform.scale(play_button,(300,150))
-        SCREEN.blit(play_button,(0,0))
+        play_button_rect= play_button.get_rect()
+        play_button_rect.x = SCREEN.get_width()/2.9
+        play_button_rect.y = SCREEN.get_height()/2
+        SCREEN.blit(play_button,play_button_rect)
+
+
         for event in pygame.event.get():
             if(event.type == pygame.QUIT):
                     running = False
-                    pygame.quit()                    
-
-                    
-                
-                  
+                    pygame.quit()      
+            if(event.type == pygame.MOUSEBUTTONDOWN):
+                if play_button_rect.collidepoint(event.pos):
+                    is_playing = True      
+                    SCREEN.fill(WHITE)  
                    
     pygame.display.update()
 
