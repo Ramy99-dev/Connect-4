@@ -44,11 +44,20 @@ def drawGrid():
 def checkWinner(matrix):
     length = 0
     for m in matrix:
-        length = len(list(filter(lambda x:(x==1) , m)))
-        if(length >=4):
-            print("WINNER")
-            pygame.quit()
-            break
+        for i in range (0 , len(m)):
+            print(m[i])
+            if(m[i] == 1):
+                length = len(list(filter(lambda x:x==1 , m[i : i+4])))
+                if(length == 4):
+                    print("PLAYER 1 : WINNER")
+                    pygame.quit()
+            elif(m[i] == 2):
+                length = len(list(filter(lambda x:x==2 , m[i : i+4])))
+                if(length == 4):
+                    print("PLAYER 2 : WINNER")
+                    pygame.quit()
+
+              
 
 def play(matrix):
      global player
