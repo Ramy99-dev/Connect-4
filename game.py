@@ -17,7 +17,6 @@ class Game():
         self.play_button = pygame.image.load('assets/play-button.png')
         self.play_button = pygame.transform.scale(self.play_button,(300,150))
         Game.SCREEN = pygame.display.set_mode((WINDOW_HEIGHT,WINDOW_WIDTH))
-        self.sound_off = pygame.image.load('assets/sound_off.png') 
         Game.SCREEN.fill(WHITE)
         
     
@@ -34,9 +33,7 @@ class Game():
         play_button_rect.x = Game.SCREEN.get_width()/2.9
         play_button_rect.y = Game.SCREEN.get_height()/2
         Game.SCREEN.blit(self.play_button,play_button_rect)
-        self.sound_off = pygame.transform.scale(self.sound_off,(60,50))
-        Game.SCREEN.blit(self.sound_off,(1020,10)) 
-        
+       
         return play_button_rect
 
         
@@ -48,7 +45,7 @@ class Game():
             for y in range(0, WINDOW_HEIGHT, blockSize):
                 rect = pygame.Rect(x, y, blockSize, blockSize)
                 Game.rectangle.append(rect)
-                pygame.draw.rect(Game.SCREEN, BLACK, rect, 1)
+                pygame.draw.rect(Game.SCREEN, BLACK, rect,1)
     
     def gameOver(self,player):
         mixer.music.pause()
@@ -131,6 +128,55 @@ class Game():
         if lines == 6 :
             self.gameOver(0)
             return True
+        
+        j = 0
+        counter1 = 0
+        counter2 = 0
+        for k in range (0 , len(matrix)):            
+            for i in range (0,len(matrix[k])):
+                    if(j < len(matrix[k])-1):
+                        if(matrix[j][i] == 1):
+                            counter1 +=1
+                            counter2 = 0
+                            j+=1
+                            if counter1 == 4 :
+                                self.gameOver(1)
+                                return True
+                        elif (matrix[j][i] == 2) :
+                            counter1 = 0 
+                            counter2 +=1   
+                            j+=1
+                            if counter2 == 4 :
+                                self.gameOver(2)
+                                return True
+            j+=1
+            
+
+        j = 0
+        counter1 = 0
+        counter2 = 0
+        for k in range (0 , len(matrix)):            
+            for i in range (len(matrix[k])-1 , -1 ,-1):
+                    if(j < len(matrix[k])-1):
+                        if(matrix[j][i] == 1):
+                            counter1 +=1
+                            counter2 = 0
+                            j+=1
+                            if counter1 == 4 :
+                                self.gameOver(1)
+                                return True
+                        elif (matrix[j][i] == 2) :
+                            counter1 = 0 
+                            counter2 +=1   
+                            j+=1
+                            if counter2 == 4 :
+                                self.gameOver(2)
+                                return True
+            j+=1
+                
+
+                    
+
 
 
                         
@@ -155,6 +201,7 @@ class Game():
       play_button_rect.y = Game.SCREEN.get_height()/2
       return play_button_rect
     
+    
 
     
            
@@ -172,6 +219,7 @@ class Game():
                     if posX < 0:
                         posX = 0
                     if posY == 5 :  
+
                          return self.play(matrix,posX,posY,i)
                     else:
                         if(matrix[posY+1][posX] != -1):

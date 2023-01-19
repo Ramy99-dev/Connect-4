@@ -14,7 +14,6 @@ play_button_rect = None
 
 while running:
     
-          
     if is_over == False : 
         if is_playing: 
             game.drawGrid()
@@ -26,6 +25,7 @@ while running:
                 if(event.type == pygame.QUIT):
                         running = False
                         pygame.quit()
+                
 
         
         else:
