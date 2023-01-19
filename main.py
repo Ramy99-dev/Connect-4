@@ -13,10 +13,11 @@ is_over = False
 play_button_rect = None
 
 while running:
-    game.drawGrid()
-                
+    
+          
     if is_over == False : 
         if is_playing: 
+            game.drawGrid()
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     val = game.clickOnBlocks(event,matrix) 
@@ -45,8 +46,8 @@ while running:
                         pygame.quit()   
                 if(event.type == pygame.MOUSEBUTTONDOWN):
                     if game.getPlayButton().collidepoint(event.pos):
-                        print("Testing ...")
                         is_playing = True  
+                        mixer.music.play(-1)
                         is_over = False   
                         Game.SCREEN.fill(WHITE) 
                         matrix = [[-1,-1,-1,-1,-1,-1,-1],
@@ -55,8 +56,5 @@ while running:
                                   [-1,-1,-1,-1,-1,-1,-1],
                                   [-1,-1,-1,-1,-1,-1,-1],
                                   [-1,-1,-1,-1,-1,-1,-1]]
-                       
-                            
-   
     pygame.display.update()
 

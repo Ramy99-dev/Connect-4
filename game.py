@@ -17,9 +17,12 @@ class Game():
         self.play_button = pygame.image.load('assets/play-button.png')
         self.play_button = pygame.transform.scale(self.play_button,(300,150))
         Game.SCREEN = pygame.display.set_mode((WINDOW_HEIGHT,WINDOW_WIDTH))
+        self.sound_off = pygame.image.load('assets/sound_off.png') 
         Game.SCREEN.fill(WHITE)
+        
     
     def startScreen(self):
+        
         Game.SCREEN.fill(WHITE)
         banner = pygame.image.load('assets/logo.png')
         banner_rect = banner.get_rect()
@@ -31,6 +34,9 @@ class Game():
         play_button_rect.x = Game.SCREEN.get_width()/2.9
         play_button_rect.y = Game.SCREEN.get_height()/2
         Game.SCREEN.blit(self.play_button,play_button_rect)
+        self.sound_off = pygame.transform.scale(self.sound_off,(60,50))
+        Game.SCREEN.blit(self.sound_off,(1020,10)) 
+        
         return play_button_rect
 
         
@@ -45,9 +51,9 @@ class Game():
                 pygame.draw.rect(Game.SCREEN, BLACK, rect, 1)
     
     def gameOver(self,player):
-        Game.SCREEN.fill(BLACK)
+        mixer.music.pause()
         play_button_rect= self.play_button.get_rect()
-       
+        Game.SCREEN.fill(BLACK)
         if(player == 1):
             text_surface =  self.my_font.render('Joueur 1 a gagnier', False, WHITE)
             text_surface = pygame.transform.scale(text_surface,(800,300))
@@ -57,7 +63,7 @@ class Game():
             play_button_rect.y = Game.SCREEN.get_height()/2
             Game.SCREEN.blit(text_surface, text_surface_rect)
         
-        else:
+        elif(player == 2):
             text_surface = self.my_font.render('Joueur 2 a gagnier', False, WHITE)
             text_surface = pygame.transform.scale(text_surface,(800,300))
             text_surface_rect= self.play_button.get_rect()
@@ -65,14 +71,18 @@ class Game():
             play_button_rect.x = Game.SCREEN.get_width()/2.9
             play_button_rect.y = Game.SCREEN.get_height()/2
             Game.SCREEN.blit(text_surface, text_surface_rect)
+        else:
+            text_surface = self.my_font.render('Egalite', False, WHITE)
+            text_surface = pygame.transform.scale(text_surface,(800,300))
+            text_surface_rect= self.play_button.get_rect()
+            text_surface_rect.x = Game.SCREEN.get_width()/7
+            play_button_rect.x = Game.SCREEN.get_width()/2.9
+            play_button_rect.y = Game.SCREEN.get_height()/2
+            Game.SCREEN.blit(text_surface, text_surface_rect)
+
   
         Game.SCREEN.blit(self.play_button,play_button_rect)
-        matrix = [[-1,-1,-1,-1,-1,-1,-1],
-                  [-1,-1,-1,-1,-1,-1,-1],
-                  [-1,-1,-1,-1,-1,-1,-1],
-                  [-1,-1,-1,-1,-1,-1,-1],
-                  [-1,-1,-1,-1,-1,-1,-1],
-                  [-1,-1,-1,-1,-1,-1,-1]]
+       
         
     
     def checkWinner(self,matrix):
@@ -97,16 +107,32 @@ class Game():
                 if(matrix[i][j] == 1):
                     counter +=1
                 
-                    if(counter >= 4):
-                        print("PLAYER 1 : WINNER")
+                    if(counter == 4):
+                        self.gameOver(1)
+                        return True
+                else:
+                    counter = 0
         
         for j in range(0,len(matrix)+1):
             counter = 0
             for i in range(0,len(matrix[j-1])-1):
                 if(matrix[i][j] == 2):
                     counter +=1
-                    if(counter >= 4):
-                        print("PLAYER 2 : WINNER")
+                    if(counter == 4):
+                        self.gameOver(2)
+                        return True
+                else:
+                    counter = 0
+                        
+        lines = 0
+        for m in matrix:
+            if(len(list(filter(lambda x : x!=-1 , m)))==7):
+                lines +=1
+        if lines == 6 :
+            self.gameOver(0)
+            return True
+
+
                         
     def play(self,matrix,posX,posY,i):
      if(matrix[posY][posX] == -1 ):
@@ -128,6 +154,9 @@ class Game():
       play_button_rect.x = Game.SCREEN.get_width()/2.9
       play_button_rect.y = Game.SCREEN.get_height()/2
       return play_button_rect
+    
+
+    
            
            
     
