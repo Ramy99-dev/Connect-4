@@ -1,101 +1,50 @@
 import pygame
 from pygame import mixer
 from config import *
-
+from screen import *
+from player import *
 
 class Game():
     rectangle = []
-    player = 1
+    
     
     SCREEN = None
     def __init__(self):
         pygame.init()
         mixer.music.load('assets/background-music.mp3')
         mixer.music.play(-1)
-        self.my_font = pygame.font.SysFont('Cascadia Code', 10)
-        pygame.display.set_caption("Puissance 4")
-        self.play_button = pygame.image.load('assets/play-button.png')
-        self.play_button = pygame.transform.scale(self.play_button,(300,150))
-        Game.SCREEN = pygame.display.set_mode((WINDOW_HEIGHT,WINDOW_WIDTH))
-        Game.SCREEN.fill(WHITE)
+        self.interface = Interface()
+        self.player = Player()
         
-    
-    def startScreen(self):
-        
-        Game.SCREEN.fill(WHITE)
-        banner = pygame.image.load('assets/logo.png')
-        banner_rect = banner.get_rect()
-        banner_rect.x = Game.SCREEN.get_width()/5
-        Game.SCREEN.blit(banner,banner_rect)
-
-        
-        play_button_rect= self.play_button.get_rect()
-        play_button_rect.x = Game.SCREEN.get_width()/2.9
-        play_button_rect.y = Game.SCREEN.get_height()/2
-        Game.SCREEN.blit(self.play_button,play_button_rect)
-       
-        return play_button_rect
-
         
         
     
-    def drawGrid(self):
+    def drawGrid(self,SCREEN):
         blockSize = int(WINDOW_WIDTH / 6) #Set the size of the grid block
         for x in range(0, WINDOW_WIDTH+1, blockSize):
             for y in range(0, WINDOW_HEIGHT, blockSize):
                 rect = pygame.Rect(x, y, blockSize, blockSize)
                 Game.rectangle.append(rect)
-                pygame.draw.rect(Game.SCREEN, BLACK, rect,1)
+                pygame.draw.rect(SCREEN, BLACK, rect,1)
     
-    def gameOver(self,player):
-        mixer.music.pause()
-        play_button_rect= self.play_button.get_rect()
-        Game.SCREEN.fill(BLACK)
-        if(player == 1):
-            text_surface =  self.my_font.render('Joueur 1 a gagnier', False, WHITE)
-            text_surface = pygame.transform.scale(text_surface,(800,300))
-            text_surface_rect= self.play_button.get_rect()
-            text_surface_rect.x = Game.SCREEN.get_width()/7
-            play_button_rect.x = Game.SCREEN.get_width()/2.9
-            play_button_rect.y = Game.SCREEN.get_height()/2
-            Game.SCREEN.blit(text_surface, text_surface_rect)
-        
-        elif(player == 2):
-            text_surface = self.my_font.render('Joueur 2 a gagnier', False, WHITE)
-            text_surface = pygame.transform.scale(text_surface,(800,300))
-            text_surface_rect= self.play_button.get_rect()
-            text_surface_rect.x = Game.SCREEN.get_width()/7
-            play_button_rect.x = Game.SCREEN.get_width()/2.9
-            play_button_rect.y = Game.SCREEN.get_height()/2
-            Game.SCREEN.blit(text_surface, text_surface_rect)
-        else:
-            text_surface = self.my_font.render('Egalite', False, WHITE)
-            text_surface = pygame.transform.scale(text_surface,(800,300))
-            text_surface_rect= self.play_button.get_rect()
-            text_surface_rect.x = Game.SCREEN.get_width()/7
-            play_button_rect.x = Game.SCREEN.get_width()/2.9
-            play_button_rect.y = Game.SCREEN.get_height()/2
-            Game.SCREEN.blit(text_surface, text_surface_rect)
-
-  
-        Game.SCREEN.blit(self.play_button,play_button_rect)
-       
+    
         
     
     def checkWinner(self,matrix):
+       
         length = 0
         for m in matrix:
             for i in range (0 , len(m)):
                 if(m[i] == 1):
                     length = len(list(filter(lambda x:x==1 , m[i : i+4])))
                     if(length == 4):
-                        self.gameOver(1)
+                        self.interface.gameOver(1)
                         return True
                     
                 elif(m[i] == 2):
                     length = len(list(filter(lambda x:x==2 , m[i : i+4])))
                     if(length == 4):
-                        self.gameOver(2)
+                        self.interface.gameOver(2)
                         return True
                         
         for j in range(0,len(matrix)+1):
@@ -105,7 +54,7 @@ class Game():
                     counter +=1
                 
                     if(counter == 4):
-                        self.gameOver(1)
+                        self.interface.gameOver(1)
                         return True
                 else:
                     counter = 0
@@ -116,7 +65,7 @@ class Game():
                 if(matrix[i][j] == 2):
                     counter +=1
                     if(counter == 4):
-                        self.gameOver(2)
+                        self.interface.gameOver(2)
                         return True
                 else:
                     counter = 0
@@ -126,7 +75,7 @@ class Game():
             if(len(list(filter(lambda x : x!=-1 , m)))==7):
                 lines +=1
         if lines == 6 :
-            self.gameOver(0)
+            self.interface.gameOver(0)
             return True
         
         j = 0
@@ -140,14 +89,14 @@ class Game():
                             counter2 = 0
                             j+=1
                             if counter1 == 4 :
-                                self.gameOver(1)
+                                self.interface.gameOver(1)
                                 return True
                         elif (matrix[j][i] == 2) :
                             counter1 = 0 
                             counter2 +=1   
                             j+=1
                             if counter2 == 4 :
-                                self.gameOver(2)
+                                self.interface.gameOver(1)
                                 return True
             j+=1
             
@@ -163,43 +112,36 @@ class Game():
                             counter2 = 0
                             j+=1
                             if counter1 == 4 :
-                                self.gameOver(1)
+                                self.interface.gameOver(1)
                                 return True
                         elif (matrix[j][i] == 2) :
                             counter1 = 0 
                             counter2 +=1   
                             j+=1
                             if counter2 == 4 :
-                                self.gameOver(2)
+                                self.interface.gameOver(2)
                                 return True
             j+=1
                 
 
                     
-
-
-
-                        
-    def play(self,matrix,posX,posY,i):
+           
+    def play(self,matrix,posX,posY,i,SCREEN):
      if(matrix[posY][posX] == -1 ):
-        if(Game.player == 1):
-            pygame.draw.circle(Game.SCREEN,RED,(Game.rectangle[i].x + 50,Game.rectangle[i].y + 50),20)
+        if(self.player.getCurrentPlayer() == 1):
+            pygame.draw.circle(SCREEN,RED,(Game.rectangle[i].x + 50,Game.rectangle[i].y + 50),20)
             matrix[posY][posX] = 1
-            Game.player = 2
+            self.player.switchPlayer()
             return self.checkWinner(matrix)
             
            
         else:
-            pygame.draw.circle(Game.SCREEN,BLUE,(Game.rectangle[i].x + 50,Game.rectangle[i].y + 50),20)
+            pygame.draw.circle(SCREEN,BLUE,(Game.rectangle[i].x + 50,Game.rectangle[i].y + 50),20)
             matrix[posY][posX] = 2
-            Game.player = 1
+            self.player.switchPlayer()
             return self.checkWinner(matrix)
     
-    def getPlayButton(self):
-      play_button_rect= self.play_button.get_rect()
-      play_button_rect.x = Game.SCREEN.get_width()/2.9
-      play_button_rect.y = Game.SCREEN.get_height()/2
-      return play_button_rect
+   
     
     
 
@@ -207,7 +149,8 @@ class Game():
            
            
     
-    def clickOnBlocks(self,event,matrix):
+    def clickOnBlocks(self,event,matrix,SCREEN):
+            x  = 0
             for i in range(0,len(Game.rectangle)):
                 if ((Game.rectangle[i].x  < event.pos[0]  < Game.rectangle[i].x + int(WINDOW_WIDTH / 6)) and
                     (Game.rectangle[i].y  < event.pos[1]  < Game.rectangle[i].y + int(WINDOW_HEIGHT/ 6)-60)):
@@ -219,8 +162,20 @@ class Game():
                     if posX < 0:
                         posX = 0
                     if posY == 5 :  
+                         return self.play(matrix,posX,posY,i,SCREEN)
+                    
+                    if(matrix[posY+1][posX] != -1):
+                        return self.play(matrix,posX,posY,i,SCREEN)
 
-                         return self.play(matrix,posX,posY,i)
                     else:
-                        if(matrix[posY+1][posX] != -1):
-                             return self.play(matrix,posX,posY,i)
+                          
+                          while(x + posY <= 5):
+                            if(matrix[posY+x][posX] != -1):
+                                return self.play(matrix,posX,posY+x-1,x+i-1,SCREEN)
+                            else:
+                                x+=1
+                            if(x + posY == 6):
+                                return self.play(matrix,posX,posY+x-1,x+i-1,SCREEN)
+                         
+                         
+                          
